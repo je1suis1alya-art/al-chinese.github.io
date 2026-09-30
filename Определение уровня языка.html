@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chinese Level Test — HSK 1–5</title>
+<style>
+:root{--ink:#202124;--muted:#6b7280;--bg:#f6f4ef;--card:#fff;--accent:#b91c1c;--accent2:#7f1d1d;--line:#e5e1d8;--ok:#15803d;--bad:#b91c1c}
+*{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:linear-gradient(135deg,#f7f2ea,#f5f6f4);min-height:100vh}
+.container{width:min(900px,92%);margin:auto}.screen{display:none;min-height:100vh;padding:42px 0}.screen.active{display:block}
+.hero{background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:28px;padding:48px;box-shadow:0 18px 60px rgba(30,25,20,.08)}
+.logo{font-size:42px;margin-bottom:8px}.eyebrow{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:800}
+h1{font-size:clamp(34px,6vw,58px);line-height:1.02;margin:12px 0 18px} h2{font-size:30px;margin:8px 0 12px} p{line-height:1.6;color:#4b5563}
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:30px 0}.feature{border:1px solid var(--line);border-radius:16px;padding:17px;background:#fff}.feature b{display:block;margin-bottom:5px}.feature span{font-size:13px;color:var(--muted)}
+button{border:0;border-radius:14px;padding:15px 22px;font-size:16px;font-weight:750;cursor:pointer;background:var(--accent);color:#fff;transition:.18s}button:hover{background:var(--accent2);transform:translateY(-1px)}button.secondary{background:#eeeae3;color:var(--ink)}button.secondary:hover{background:#e4dfd6}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;color:var(--muted);font-size:14px}.progress{height:8px;background:#e8e4dc;border-radius:20px;overflow:hidden;margin-bottom:30px}.progress i{display:block;height:100%;background:var(--accent);width:0%;transition:.3s}
+.question-card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:34px;box-shadow:0 12px 40px rgba(30,25,20,.06)}.leveltag{display:inline-block;background:#f7e6e6;color:var(--accent);border-radius:999px;padding:7px 11px;font-size:12px;font-weight:800;margin-bottom:18px}.qtext{font-size:26px;line-height:1.5;margin:4px 0 28px}.qtext .blank{display:inline-block;min-width:65px;border-bottom:2px solid var(--accent);color:var(--accent)}
+.options{display:grid;gap:12px}.option{padding:17px 18px;border:1.5px solid #dedad1;border-radius:14px;background:#fff;text-align:left;color:var(--ink);font-weight:550}.option:hover{border-color:#b8afa1;background:#faf8f4}.option.selected{border-color:var(--accent);background:#fff3f3}.option.correct{border-color:var(--ok);background:#effbf2}.option.wrong{border-color:var(--bad);background:#fff1f1}.nav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}.nav .right{display:flex;gap:10px}
+.result{background:#fff;border:1px solid var(--line);border-radius:28px;padding:42px;box-shadow:0 18px 60px rgba(30,25,20,.08)}.result-level{font-size:72px;font-weight:900;color:var(--accent);line-height:1;margin:8px 0 14px}.score{font-size:20px;font-weight:700}.bars{margin:28px 0}.barrow{margin:17px 0}.barlabel{display:flex;justify-content:space-between;font-size:14px;margin-bottom:7px}.bar{height:10px;background:#ebe8e1;border-radius:10px;overflow:hidden}.bar i{display:block;height:100%;background:var(--accent);border-radius:10px}.note{padding:17px 18px;background:#f8f6f1;border-radius:15px;color:#4b5563;margin:22px 0}.review{margin-top:25px}.review details{border-top:1px solid var(--line);padding:13px 0}.review summary{cursor:pointer;font-weight:700}.small{font-size:13px;color:var(--muted)}
+@media(max-width:650px){.hero,.result,.question-card{padding:25px}.features{grid-template-columns:1fr}.qtext{font-size:21px}.result-level{font-size:58px}.screen{padding:20px 0}}
+</style>
+</head>
+<body>
+<div id="start" class="screen active"><div class="container"><div class="hero">
+<div class="logo">🇨🇳</div><div class="eyebrow">Chinese placement test</div>
+<h1>Определи свой уровень китайского</h1>
+<p>Диагностический тест от базового HSK 1 до продвинутого HSK 5. Вопросы становятся сложнее, а в конце ты увидишь примерный уровень и сильные/слабые стороны.</p>
+<div class="features">
+<div class="feature"><b>📝 50 вопросов</b><span>лексика, грамматика, порядок слов и чтение</span></div>
+<div class="feature"><b>🎯 HSK 1–5</b><span>от начинающего до продвинутого уровня</span></div>
+<div class="feature"><b>⚡ Автоматический результат</b><span>баллы и диагностика сразу после теста</span></div>
+</div>
+<p class="small">Это диагностический тест, а не официальный экзамен HSK. Результат показывает ориентировочный уровень.</p>
+<button onclick="startTest()">Начать тест →</button>
+</div></div></div>
+
+<div id="test" class="screen"><div class="container">
+<div class="topbar"><span id="counter"></span><span id="section"></span></div>
+<div class="progress"><i id="progress"></i></div>
+<div class="question-card">
+<div id="leveltag" class="leveltag"></div>
+<div id="qtext" class="qtext"></div>
+<div id="options" class="options"></div>
+<div class="nav"><button class="secondary" id="prevBtn" onclick="prevQ()">← Назад</button><div class="right"><button id="nextBtn" onclick="nextQ()">Далее →</button></div></div>
+</div></div></div>
+
+<div id="result" class="screen"><div class="container"><div class="result">
+<div class="eyebrow">Результат диагностики</div><div class="result-level" id="resultLevel"></div>
+<h2 id="resultTitle"></h2><div class="score" id="score"></div>
+<div class="note" id="resultNote"></div>
+<h3>Профиль навыков</h3><div class="bars" id="bars"></div>
+<div class="review"><h3>Что повторить</h3><div id="advice"></div></div>
+<div class="nav"><button class="secondary" onclick="location.reload()">Пройти заново</button><button onclick="window.print()">Сохранить / распечатать результат</button></div>
+<p class="small" style="margin-top:20px">Для преподавателя: результат можно использовать как предварительную точку входа. Для официального подтверждения уровня нужен соответствующий экзамен.</p>
+</div></div></div>
+
+<script>
+const questions = [
+{l:1,s:"Лексика",q:"你好！你____名字叫什么？",o:["的","叫","是","有"],a:1,k:"Лексика"},
+{l:1,s:"Грамматика",q:"我____学生。",o:["是","叫","有","在"],a:0,k:"Грамматика"},
+{l:1,s:"Лексика",q:"“谢谢”是什么意思？",o:["Здравствуйте","До свидания","Спасибо","Пожалуйста"],a:2,k:"Лексика"},
+{l:1,s:"Порядок слов",q:"Выберите правильное предложение.",o:["我中国是人。","我是中国人。","中国我人是。","是我中国人。"],a:1,k:"Грамматика"},
+{l:1,s:"Лексика",q:"我喝____。",o:["水","书","人","猫"],a:0,k:"Лексика"},
+{l:1,s:"Грамматика",q:"你____哪儿？",o:["去","是","有","叫"],a:0,k:"Грамматика"},
+{l:1,s:"Чтение",q:"小王是学生。他在北京学习汉语。小王学习什么？",o:["英语","俄语","汉语","日语"],a:2,k:"Чтение"},
+{l:1,s:"Лексика",q:"“今天” — это:",o:["вчера","сегодня","завтра","утром"],a:1,k:"Лексика"},
+{l:1,s:"Грамматика",q:"我有两个____。",o:["朋友","高兴","喜欢","漂亮"],a:0,k:"Грамматика"},
+{l:1,s:"Порядок слов",q:"Выберите правильный вариант.",o:["我喜欢很中国菜。","我很喜欢中国菜。","很我喜欢中国菜。","中国菜我喜欢很。"],a:1,k:"Грамматика"},
+
+{l:2,s:"Грамматика",q:"昨天我____朋友一起去看电影。",o:["和","在","从","给"],a:0,k:"Грамматика"},
+{l:2,s:"Грамматика",q:"他已经吃____饭了。",o:["过","了","着","在"],a:1,k:"Грамматика"},
+{l:2,s:"Лексика",q:"如果你不知道，可以____老师。",o:["问","买","穿","坐"],a:0,k:"Лексика"},
+{l:2,s:"Грамматика",q:"我比弟弟____高。",o:["很","更","最","太"],a:1,k:"Грамматика"},
+{l:2,s:"Чтение",q:"小丽每天七点起床，八点去上班。她几点去上班？",o:["七点","八点","九点","六点"],a:1,k:"Чтение"},
+{l:2,s:"Лексика",q:"“容易”的反义词是什么？",o:["简单","快乐","难","慢"],a:2,k:"Лексика"},
+{l:2,s:"Грамматика",q:"你吃饭____？",o:["没有","了吗","不","很"],a:1,k:"Грамматика"},
+{l:2,s:"Порядок слов",q:"Выберите правильное предложение.",o:["我昨天在家看电视。","昨天我电视看在家。","我在昨天电视看家。","看电视我昨天在家。"],a:0,k:"Грамматика"},
+{l:2,s:"Лексика",q:"外面下雨了，记得____雨伞。",o:["带","找","洗","开"],a:0,k:"Лексика"},
+{l:2,s:"Чтение",q:"我很喜欢这个工作，因为同事都很好，而且离我家很近。为什么他喜欢这个工作？",o:["工资很高","同事很好而且离家近","工作很容易","办公室很大"],a:1,k:"Чтение"},
+
+{l:3,s:"Грамматика",q:"虽然今天下雨了，____他还是决定去上班。",o:["所以","但是","因为","如果"],a:1,k:"Грамматика"},
+{l:3,s:"Грамматика",q:"我去过北京两____。",o:["遍","次","件","双"],a:1,k:"Грамматика"},
+{l:3,s:"Лексика",q:"这件事对我的工作____很大。",o:["影响","经验","办法","关系"],a:0,k:"Лексика"},
+{l:3,s:"Грамматика",q:"他把书____桌子上了。",o:["在","到","给","放在"],a:3,k:"Грамматика"},
+{l:3,s:"Чтение",q:"很多人喜欢晚上运动，因为白天工作比较忙。作者认为人们为什么晚上运动？",o:["晚上天气好","晚上有更多朋友","白天没有时间","运动很容易"],a:2,k:"Чтение"},
+{l:3,s:"Лексика",q:"我刚才没听清楚，请你再说____。",o:["一次","一共","一定","一直"],a:0,k:"Лексика"},
+{l:3,s:"Грамматика",q:"天气____来越冷了。",o:["越","更","再","又"],a:0,k:"Грамматика"},
+{l:3,s:"Порядок слов",q:"Выберите правильный вариант.",o:["他把问题已经解决了。","他已经把问题解决了。","已经他问题把解决了。","他问题已经解决把了。"],a:1,k:"Грамматика"},
+{l:3,s:"Лексика",q:"遇到问题的时候，我们应该先____办法。",o:["想","做","见","拿"],a:0,k:"Лексика"},
+{l:3,s:"Чтение",q:"小张原来每天坐地铁上班，后来公司搬到了他家附近，所以现在他每天走路上班。发生了什么变化？",o:["他换了工作","公司离家更近了","他开始坐地铁","他搬家了"],a:1,k:"Чтение"},
+
+{l:4,s:"Грамматика",q:"____天气不好，他还是准时参加了活动。",o:["尽管","由于","因此","只要"],a:0,k:"Грамматика"},
+{l:4,s:"Лексика",q:"这份工作不仅要求经验，____需要很好的沟通能力。",o:["而且","否则","甚至","因此"],a:0,k:"Лексика"},
+{l:4,s:"Грамматика",q:"如果你早点告诉我，我____提前准备。",o:["就会","才会","已经","正在"],a:0,k:"Грамматика"},
+{l:4,s:"Лексика",q:"这个问题比较复杂，需要进一步____。",o:["研究","热闹","鼓励","浪费"],a:0,k:"Лексика"},
+{l:4,s:"Чтение",q:"随着生活水平的提高，人们对健康的关注越来越多。除了饮食，很多人也开始重视运动和睡眠。根据这段话，人们现在更关注什么？",o:["工作时间","健康","旅行","收入"],a:1,k:"Чтение"},
+{l:4,s:"Грамматика",q:"他之所以成功，____他一直坚持努力。",o:["是因为","即使","为了","除了"],a:0,k:"Грамматика"},
+{l:4,s:"Лексика",q:"这个决定可能会____很多人的生活。",o:["影响","证明","申请","拒绝"],a:0,k:"Лексика"},
+{l:4,s:"Чтение",q:"有些人认为学习语言最重要的是记住大量单词，但研究表明，只认识单词并不代表能够自然地使用语言。真正提高语言能力还需要大量输入和实际交流。作者主要想说明什么？",o:["背单词没有用","语言学习不需要交流","认识单词不等于会使用语言","研究比学习重要"],a:2,k:"Чтение"},
+{l:4,s:"Порядок слов",q:"Выберите наиболее естественное предложение.",o:["我对中国文化一直很感兴趣。","我一直对很中国文化感兴趣。","对中国文化我很一直感兴趣。","我很中国文化一直对感兴趣。"],a:0,k:"Грамматика"},
+{l:4,s:"Лексика",q:"在做决定之前，我们应该充分考虑各种____。",o:["因素","方向","材料","性格"],a:0,k:"Лексика"},
+
+{l:5,s:"Грамматика",q:"____他已经提前做好了准备，事情还是没有按照计划进行。",o:["尽管","既然","除非","由于"],a:0,k:"Грамматика"},
+{l:5,s:"Лексика",q:"这项政策的实施可能会产生深远的____。",o:["影响","印象","效果","后果"],a:3,k:"Лексика"},
+{l:5,s:"Грамматика",q:"与其一味地抱怨，____想办法解决问题。",o:["不如","即使","以免","从而"],a:0,k:"Грамматика"},
+{l:5,s:"Чтение",q:"在信息迅速传播的今天，人们获取知识的渠道比过去丰富得多。然而，信息数量的增加并不意味着信息质量的提高。因此，如何判断信息是否可靠，已经成为一项重要能力。本文主要强调什么？",o:["信息传播速度越来越慢","获取知识的渠道减少了","信息越多越容易学习","判断信息可靠性的能力很重要"],a:3,k:"Чтение"},
+{l:5,s:"Лексика",q:"这一现象引起了社会各界的广泛____。",o:["关注","安排","承担","采取"],a:0,k:"Лексика"},
+{l:5,s:"Грамматика",q:"他提出这个建议，____是希望提高工作效率。",o:["无非","未免","难免","何必"],a:0,k:"Грамматика"},
+{l:5,s:"Чтение",q:"传统文化并不是一成不变的。它在保留核心价值的同时，也会随着社会环境的变化而不断调整。只有这样，传统文化才能真正融入现代生活。根据本文，传统文化应该如何发展？",o:["完全保持原样","放弃核心价值","在保持核心价值的基础上适应变化","只存在于博物馆"],a:2,k:"Чтение"},
+{l:5,s:"Лексика",q:"面对突发情况，他表现得十分____，没有丝毫慌乱。",o:["镇定","随便","勉强","偶然"],a:0,k:"Лексика"},
+{l:5,s:"Грамматика",q:"这件事情看似简单，实际上远比我们想象的____。",o:["复杂","复杂了","更复杂","复杂得多"],a:3,k:"Грамматика"}
+];
+
+let current=0, answers=Array(questions.length).fill(null);
+const $=id=>document.getElementById(id);
+function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');window.scrollTo(0,0)}
+function startTest(){current=0;answers.fill(null);show('test');render()}
+function render(){
+ const q=questions[current], total=questions.length;
+ $('counter').textContent=`Вопрос ${current+1} из ${total}`;
+ $('section').textContent=q.s;
+ $('progress').style.width=((current)/total*100)+'%';
+ $('leveltag').textContent=`HSK ${q.l} · ${q.s}`;
+ $('qtext').innerHTML=q.q.replace(/____/g,'<span class="blank">_____</span>');
+ $('options').innerHTML='';
+ q.o.forEach((opt,i)=>{
+   const b=document.createElement('button'); b.className='option'+(answers[current]===i?' selected':''); b.textContent=`${String.fromCharCode(65+i)}  ${opt}`;
+   b.onclick=()=>{answers[current]=i; renderOptionsOnly()}; $('options').appendChild(b);
+ });
+ $('prevBtn').style.visibility=current===0?'hidden':'visible';
+ $('nextBtn').textContent=current===total-1?'Завершить тест':'Далее →';
+}
+function renderOptionsOnly(){
+ document.querySelectorAll('.option').forEach((b,i)=>b.classList.toggle('selected',answers[current]===i));
+}
+function nextQ(){
+ if(answers[current]===null){alert('Выберите ответ, чтобы продолжить.');return}
+ if(current<questions.length-1){current++;render()}else finish();
+}
+function prevQ(){if(current>0){current--;render()}}
+function finish(){
+ let byL={1:0,2:0,3:0,4:0,5:0}, totalL={1:0,2:0,3:0,4:0,5:0}, skills={};
+ questions.forEach((q,i)=>{totalL[q.l]++;skills[q.k]??={c:0,t:0};skills[q.k].t++;if(answers[i]===q.a){byL[q.l]++;skills[q.k].c++}});
+ // Conservative level: highest level with at least 60% at that level, while earlier levels are at least 70%.
+ let level=1;
+ for(let l=1;l<=5;l++){let pct=byL[l]/totalL[l]; if(pct>=.6) level=l; else break}
+ const overall=answers.reduce((n,a,i)=>n+(a===questions[i].a?1:0),0);
+ $('resultLevel').textContent=`HSK ${level}`;
+ $('resultTitle').textContent=level===1?'Базовый уровень':level===2?'Элементарный уровень':level===3?'Средний уровень':level===4?'Выше среднего': 'Продвинутый уровень';
+ $('score').textContent=`Правильных ответов: ${overall} из ${questions.length} (${Math.round(overall/questions.length*100)}%)`;
+ $('resultNote').textContent=`По результатам этого диагностического теста вы уверенно справились с заданиями до уровня HSK ${level}. Граница следующего уровня начинается там, где количество ошибок заметно возрастает.`;
+ const names={Лексика:'Лексика',Грамматика:'Грамматика',Чтение:'Чтение'};
+ $('bars').innerHTML=Object.entries(skills).map(([k,v])=>{let p=Math.round(v.c/v.t*100);return `<div class="barrow"><div class="barlabel"><span>${names[k]||k}</span><b>${p}%</b></div><div class="bar"><i style="width:${p}%"></i></div></div>`}).join('');
+ const tips=[];
+ if(skills['Лексика']?.c/skills['Лексика']?.t<.7) tips.push('расширить активный словарный запас');
+ if(skills['Грамматика']?.c/skills['Грамматика']?.t<.7) tips.push('повторить ключевые грамматические конструкции');
+ if(skills['Чтение']?.c/skills['Чтение']?.t<.7) tips.push('потренировать чтение связных текстов');
+ $('advice').innerHTML=tips.length?`<ul>${tips.map(x=>`<li>${x}</li>`).join('')}</ul>`:'<p>Профиль выглядит достаточно ровно. Можно переходить к заданиям следующего уровня.</p>';
+ show('result');
+}
+</script>
+</body>
+</html>
